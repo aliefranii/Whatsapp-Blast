@@ -1,35 +1,11 @@
 # Docker Compose — ChatLoop (WhatsApp AI Assistant)
 # Usage:
 #   1. Salin .env.example → .env dan isi value yang sesuai
+#      (DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME → arahkan ke MySQL yang sudah ada)
 #   2. docker compose up -d --build
 #   3. Akses di http://localhost:3030
 
 services:
-  # ────────────────────────────────────────────────────────────
-  # MySQL Database
-  # ────────────────────────────────────────────────────────────
-  db:
-    image: mysql:8.0
-    container_name: chatloop-db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASS:-password_mysql_anda}
-      MYSQL_DATABASE: ${DB_NAME:-db_wa_blast}
-      MYSQL_CHARSET: utf8mb4
-      MYSQL_COLLATION: utf8mb4_unicode_ci
-    ports:
-      - "3307:3306"  # Expose di port 3307 agar tidak bentrok dengan MySQL lokal
-    volumes:
-      - chatloop-mysql-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASS:-password_mysql_anda}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-    networks:
-      - chatloop-net
-
   # ────────────────────────────────────────────────────────────
   # ChatLoop App (Go backend + React frontend)
   # ────────────────────────────────────────────────────────────
@@ -39,15 +15,9 @@ services:
       dockerfile: Dockerfile
     container_name: chatloop-app
     restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
     env_file:
       - .env
     environment:
-      # Override DB_HOST to point to the 'db' service inside Docker network
-      DB_HOST: db
-      DB_PORT: "3306"
       GIN_MODE: release
       STATIC_DIR: frontend/dist
       DB_PATH: /app/data/wa-assistant.db
@@ -63,8 +33,6 @@ services:
 # Persistent volumes
 # ────────────────────────────────────────────────────────────
 volumes:
-  chatloop-mysql-data:
-    driver: local
   chatloop-wa-data:
     driver: local
 
