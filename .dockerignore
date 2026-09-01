@@ -1,0 +1,45 @@
+# Dependencies & build artifacts
+node_modules
+frontend/node_modules
+frontend/dist
+
+# Go
+*.exe
+*.test
+*.out
+
+# IDE & OS
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+
+# Environment (secrets — injected via env_file, not baked into image)
+.env
+
+# Git
+.git
+.gitignore
+
+# Docs & misc
+docs/
+*.md
+LICENSE
+NOTICE
+.github/
+
+# Air (live-reload — not needed in production)
+.air.toml
+.air.windows.toml
+tmp/
+.tmp/
+
+# WhatsApp session data (runtime, not build-time)
+*.db
