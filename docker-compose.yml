@@ -23,7 +23,7 @@ services:
       DB_PATH: /app/data/wa-assistant.db
       PORT: "3030"
     ports:
-      - "3030:3030"
+      - "${APP_PORT:-3030}:8000"
     volumes:
       - chatloop-wa-data:/app/data   # WhatsApp session & SQLite data
     networks:
